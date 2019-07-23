@@ -1,0 +1,17 @@
+#!/bin/bash
+export SHOW_FPS=1
+export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
+export GST_PLUGIN_PATH=/usr/local/lib/gstreamer-1.0
+
+/usr/local/bin/gst-launch-1.0 -vvv \
+  uvch264src \
+    iframe-period=100 \
+    initial-bitrate=24000000 \
+    average-bitrate=24000000 \
+    device=/dev/video0 \
+    auto-start=true \
+    name=src src.vidsrc ! \
+  video/x-h264,width=1920,height=1080,framerate=30/1,profile=constrained-baseline ! \
+  h264parse ! \
+  rndbuffersize min=1500 max=1500 ! \
+  multiudpsink clients=192.168.0.162:5004,192.168.0.94:5005

@@ -1,0 +1,26 @@
+#!/bin/bash
+export SHOW_FPS=1
+#export LD_LIBRARY_PATH=/usr/lib
+#export GST_PLUGIN_PATH=/usr/lib/arm-linux-gnueabihf/gstreamer-1.0
+
+export LD_LIBRARY_PATH=/usr/local/lib:/usr/lib/arm-linux-gnueabihf
+export GST_PLUGIN_PATH=/usr/local/lib/gstreamer-1.0
+
+export DISPLAY=:0
+
+#/usr/bin/gst-launch-1.0 -vvv \
+/usr/local/bin/gst-launch-1.0 -vvv \
+  uvch264src \
+    iframe-period=100 \
+    initial-bitrate=24000000 \
+    average-bitrate=24000000 \
+    device=/dev/video0 \
+    auto-start=true \
+    name=src src.vidsrc ! \
+  video/x-h264,width=1920,height=1080,framerate=30/1,profile=constrained-baseline ! \
+  h264parse  !  omxh264dec ! nvvidconv ! nveglglessink sync=false
+
+#  h264parse ! tee name=t ! \
+#  rndbuffersize min=1500 max=1500 ! \
+#  udpsink host=192.168.0.162 port=5004 \
+#  t. ! queue !  omxh264dec ! nvvidconv ! nvhdmioverlaysink sync=false &> log.txt

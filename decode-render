@@ -1,0 +1,11 @@
+#!/bin/bash
+export SHOW_FPS=1
+
+/usr/bin/gst-launch-1.0 -vvv \
+  udpsrc address=192.168.0.94 port=5005 ! \
+  video/x-h264,width=1920,height=1080,framerate=30/1,stream-format=byte-stream ! \
+  queue ! \
+  h264parse ! \
+  omxh264dec ! \
+  nvvidconv ! \
+  nveglglessink sync=false
