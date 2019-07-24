@@ -18,9 +18,6 @@ export DISPLAY=:0
     auto-start=true \
     name=src src.vidsrc ! \
   video/x-h264,width=1920,height=1080,framerate=30/1,profile=constrained-baseline ! \
-  h264parse  !  omxh264dec ! nvvidconv ! nveglglessink sync=false
-
-#  h264parse ! tee name=t ! \
-#  rndbuffersize min=1500 max=1500 ! \
-#  udpsink host=192.168.0.162 port=5004 \
-#  t. ! queue !  omxh264dec ! nvvidconv ! nvhdmioverlaysink sync=false &> log.txt
+  h264parse ! tee name=t !  omxh264dec ! nvvidconv ! xvimagesink sync=false \
+  t. ! queue ! rndbuffersize min=1500 max=1500 ! \
+  multiudpsink clients=192.168.0.162:5004,192.168.0.94:5005
